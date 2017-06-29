@@ -51,6 +51,7 @@ var fs = require('fs'),
 		.default('v', null)
 		.default('o', 'frames')
 		.default('aws-profile', "default")
+		.default('aws-credentials', null)
 		.default('aws-region', "us-west-2")
 		.default('verbose', false)
 		.describe('i', 'Input video filename.')
@@ -65,6 +66,7 @@ var fs = require('fs'),
 		.describe('v', 'An identifier for the video being processed. It is used as an identifier in directory name.')
 		.describe('o', 'Directory where the frames should be dumped. This directory will be deleted after uploading the frames if --push-to-cloud is used.')
 		.describe('aws-profile', "Name of the AWS Credentials profile to use from the ~/.aws/credentials file.")
+		.describe('aws-credentials', "The AWS Credentials to use instead of profile from the ~/.aws/credentials file.")
 		.describe('aws-region', "Specify the AWS region to use.")
 		.describe('verbose', "Prints detailed logs instead of simply showing progress in stdout.")
 		.argv;
@@ -125,7 +127,7 @@ var failedFrames = [],
 	totalPushCount = 0,
 	ffmpegCmd = null;
 
-var credentials = new AWS.SharedIniFileCredentials({profile: argv.awsProfile});
+var credentials = argv.awsCredentials || new AWS.SharedIniFileCredentials({profile: argv.awsProfile});
 
 AWS.config.update({
 
